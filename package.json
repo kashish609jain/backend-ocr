@@ -13,8 +13,6 @@
     "proxy": "^2.1.1"
   },
   "scripts": {
-    "server": "nodemon Backend/server",
-    "frontend": "cd frontend && npm start",
-    "dev": "concurrently \"npm run frontend\" \"npm run server\""
+    "server": "nodemon server"
   }
 }

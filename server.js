@@ -1,12 +1,12 @@
 const path = require('path');
 const express = require('express');
-const connectDB = require('./config/db')
-const citizenRoutes = require('./routes/citizenRoutes')
+const connectDB = require('./Backend/config/db')
+const citizenRoutes = require('./Backend/routes/citizenRoutes')
 const vision = require('@google-cloud/vision');
 const multer = require('multer');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const { notFound, errorHandler } = require('./Backend/middleware/errorMiddleware');
 dotenv.config();
 connectDB()
 
