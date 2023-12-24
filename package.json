@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@google-cloud/vision": "^4.0.2",
+    "axios": "^1.6.2",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^8.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.0.2",
+    "proxy": "^2.1.1"
+  },
+  "scripts": {
+    "server": "nodemon Backend/server",
+    "frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run frontend\" \"npm run server\""
+  }
+}
