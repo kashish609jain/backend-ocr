@@ -43,26 +43,6 @@ const createCitizen = asyncHandler(async(req, res) => {
     }
 })
 
-// const getCitizen = async(req, res) => {
-//     // console.log("IN GET CALL", req)
-//     const id = req.params.id;
-//     // if id is not received dont call the mongo find 
-//     var citizen = null
-//     if (id){
-//         citizen = await Citizen.findOne({identification_number: id})
-//     }
-//     else{
-//         res.status(404)
-//         throw new Error('Citizen not found')    
-//     }
-//     if(citizen){
-//         res.json(citizen)
-//     } else{
-//         res.status(404)
-//         throw new Error('Citizen not found')
-//     }
-  
-// }
 
 const getCitizen = async (req, res) => {
     try {
@@ -85,35 +65,14 @@ const getCitizen = async (req, res) => {
     }
 };
 
-// Assuming you have error handling middleware set up, the error will be caught and handled appropriately.
 
-
-// const deleteCitizen = async(req, res) => {
-//     // upar bhi sahi kr lena it should be id number and not id since db ki id nahi hai woh 
-//     // url me bhi it should be id number not id 
-//     console.log('IN DELETE CALL')
-//     // console.log(req.body)
-//     console.log(req.params)
-//     id_number = req.params.id
-//     var citizen = await Citizen.findOne({identification_number: id_number})
-//     // also use a try catch here if the mongo gives some error it will not break the code 
-//     if(citizen) {
-//         console.log("CITIZEN",citizen)
-//         // await citizen.remove()
-//         await Citizen.findByIdAndDelete(citizen.id)
-//         res.json({message: 'Citizen removed'})
-//     } else {
-//         res.status(404)
-//         throw new Error('Citizen not found')
-//     }
-// }
 const editCitizen = async (req, res) => {
-    const { id } = req.params; 
-    const { updatedData } = req.body; 
-  
+    console.log("edit citizen")
+    const  updatedData  = req.body; 
+    console.log(updatedData)
     try {
       
-      const citizen = await Citizen.findById(id);
+      const citizen = await Citizen.findOne({identification_number: req.params.id})
   
       if (!citizen) {
         return res.status(404).json({ message: 'Citizen not found' });
@@ -121,17 +80,17 @@ const editCitizen = async (req, res) => {
       if (updatedData.name) {
         citizen.name = updatedData.name;
       }
-      if (updatedData.lastName) {
-        citizen.lastName = updatedData.lastName;
+      if (updatedData.last_name) {
+        citizen.last_name = updatedData.last_name;
       }
       if (updatedData.date_of_birth) {
-        citizen.lastName = updatedData.date_of_birth;
+        citizen.date_of_birth = updatedData.date_of_birth;
       }
       if (updatedData.date_of_expiry) {
-        citizen.lastName = updatedData.date_of_expiry;
+        citizen.date_of_expiry = updatedData.date_of_expiry;
       }
       if (updatedData.date_of_issue) {
-        citizen.lastName = updatedData.date_of_issue;
+        citizen.date_of_issue = updatedData.date_of_issue;
       }
       
       await citizen.save();
