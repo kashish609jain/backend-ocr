@@ -79,25 +79,48 @@ const editCitizen = async (req, res) => {
     }
   };
 
+// const getCitizen = async (req, res) => {
+//     try {
+       
+//         const id = req.params.id;
+//         if (!id) {
+//             res.status(404);
+//             throw new Error('Citizen ID not provided');
+//         }
+//         const citizen = await Citizen.findOne({ identification_number: id });
+//         if (citizen) {
+//             res.json(citizen);
+//         } else {
+//             res.status(404);
+//             throw new Error('Citizen not found');
+//         }
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 const getCitizen = async (req, res) => {
     try {
-       
         const id = req.params.id;
         if (!id) {
             res.status(404);
             throw new Error('Citizen ID not provided');
         }
+
         const citizen = await Citizen.findOne({ identification_number: id });
+
         if (citizen) {
             res.json(citizen);
         } else {
-            res.status(404);
-            throw new Error('Citizen not found');
+            // Send an empty object as the response when citizen is not found
+            res.json({});
         }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // Handle other errors or log them if needed
+        console.error('Error fetching citizen:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 
 
