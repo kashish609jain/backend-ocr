@@ -66,40 +66,41 @@ const getCitizen = async (req, res) => {
 };
 
 
-const editCitizen = async (req, res) => {
-    console.log("edit citizen")
-    const  updatedData  = req.body; 
-    console.log(updatedData)
-    try {
+// const editCitizen = async (req, res) => {
+//     console.log("edit citizen")
+//     const  updatedData  = req.body; 
+//     console.log(updatedData)
+//     try {
       
-      const citizen = await Citizen.findOne({identification_number: req.params.id})
+//       const citizen = await Citizen.findOne({identification_number: req.params.id})
   
-      if (!citizen) {
-        return res.status(404).json({ message: 'Citizen not found' });
-      }
-      if (updatedData.name) {
-        citizen.name = updatedData.name;
-      }
-      if (updatedData.last_name) {
-        citizen.last_name = updatedData.last_name;
-      }
-      if (updatedData.date_of_birth) {
-        citizen.date_of_birth = updatedData.date_of_birth;
-      }
-      if (updatedData.date_of_expiry) {
-        citizen.date_of_expiry = updatedData.date_of_expiry;
-      }
-      if (updatedData.date_of_issue) {
-        citizen.date_of_issue = updatedData.date_of_issue;
-      }
+//       if (!citizen) {
+//         return res.status(404).json({ message: 'Citizen not found' });
+//       }
+//       if (updatedData.name) {
+//         citizen.name = updatedData.name;
+//       }
+//       if (updatedData.last_name) {
+//         citizen.last_name = updatedData.last_name;
+//       }
+//       if (updatedData.date_of_birth) {
+//         citizen.date_of_birth = updatedData.date_of_birth;
+//       }
+//       if (updatedData.date_of_expiry) {
+//         citizen.date_of_expiry = updatedData.date_of_expiry;
+//       }
+//       if (updatedData.date_of_issue) {
+//         citizen.date_of_issue = updatedData.date_of_issue;
+//       }
       
-      await citizen.save();
-      res.status(200).json({ message: 'Citizen updated successfully', citizen });
-    } catch (error) {
-      console.error('Error editing citizen:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
+//       await citizen.save();
+//       res.status(200).json({ message: 'Citizen updated successfully', citizen });
+//     } catch (error) {
+//       console.error('Error editing citizen:', error);
+//       res.status(500).json({ message: 'Internal Server Error' });
+//     }
+//   };
+
 const deleteCitizen = async (req, res) => {
     try {
         // console.log('IN DELETE CALL');
@@ -130,5 +131,5 @@ const deleteCitizen = async (req, res) => {
 };
 
 
-module.exports = {createCitizen, getCitizen, deleteCitizen,editCitizen}
+module.exports = {createCitizen, getCitizen, deleteCitizen}
 
