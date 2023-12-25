@@ -79,25 +79,7 @@ const editCitizen = async (req, res) => {
     }
   };
 
-// const getCitizen = async (req, res) => {
-//     try {
-       
-//         const id = req.params.id;
-//         if (!id) {
-//             res.status(404);
-//             throw new Error('Citizen ID not provided');
-//         }
-//         const citizen = await Citizen.findOne({ identification_number: id });
-//         if (citizen) {
-//             res.json(citizen);
-//         } else {
-//             res.status(404);
-//             throw new Error('Citizen not found');
-//         }
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
+
 const getCitizen = async (req, res) => {
     try {
         const id = req.params.id;
@@ -121,7 +103,18 @@ const getCitizen = async (req, res) => {
     }
 };
 
+const getAllCitizens = async (req, res) => {
+    try {
+        const allCitizens = await Citizen.find({});
 
+        // Send the array of citizens as the response
+        res.json(allCitizens);
+    } catch (error) {
+        // Handle other errors or log them if needed
+        console.error('Error fetching all citizens:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 const deleteCitizen = async (req, res) => {
@@ -154,5 +147,6 @@ const deleteCitizen = async (req, res) => {
 };
 
 
-module.exports = {createCitizen, getCitizen, deleteCitizen, editCitizen}
+
+module.exports = {createCitizen, getCitizen, deleteCitizen, editCitizen,getAllCitizens}
 
