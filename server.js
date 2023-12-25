@@ -67,77 +67,139 @@ app.get("*",function(req,res){
 
 
 // Endpoint to perform text detection
+// app.post('/upload', upload.single('image'), async (req, res) => {
+//     try {
+
+//       const fileName = 'uploads/' + req.file.filename
+//       // console.log(fileName)
+//      // Performs text detection on the local file
+//       const [result] = await client.textDetection(fileName);
+//      // console.log(result)
+//       console.log("IN POST CALL")
+//       const detections = result.textAnnotations;
+//       const textResults = await detections.map(text => text.description);
+//       // console.log(textResults)
+
+//       // Join the array elements into a single string for easier processing
+//       const englishDateRegex = /\b\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\. \d{4}\b/g;
+//       // Function to extract English dates from text using the regex
+//       function extractEnglishDates(text) 
+//       {
+//         return text.match(englishDateRegex) || [];
+//       }
+//       // Array to store all extracted English dates
+//       let allEnglishDates = [];
+//       // Loop through each text result and extract English dates
+//       textResults.forEach(result => {
+//       const englishDatesInResult = extractEnglishDates(result);
+//       allEnglishDates = allEnglishDates.concat(englishDatesInResult);
+//       });
+
+
+//       const joinedText = textResults.join(' ');
+
+//       // Regular expressions to extract information
+//       const idNumberRegex = /\b\d+ \d+ \d+ \d+ \d+\b/g;
+//       const firstNameRegex = /\bName\s+([\s\S]+?)\n/;
+//       const lastNameRegex = /\bLast\s+name\s+(\S+)/;
+
+//       // Extract information using regular expressions
+//       const idNumber = joinedText.match(idNumberRegex)[0];
+//       const firstName = joinedText.match(firstNameRegex)[1];
+//       const lastName = joinedText.match(lastNameRegex)[1];
+//       const dateOfBirth = allEnglishDates[0];
+//       const issueDate = allEnglishDates[1];
+      
+//       const expiryDate = allEnglishDates[2];
+
+//       function formatDate(dateString) {
+//           const date = new Date(dateString);
+//           const day = date.getDate().toString().padStart(2, '0');
+//           const month = (date.getMonth() + 1).toString().padStart(2, '0');
+//           const year = date.getFullYear();
+//           return `${day}/${month}/${year}`;
+//       }
+
+//       const responseObject = {
+//           identification_number: idNumber,
+//           name: firstName,
+//           last_name: lastName,
+//           "date_of_birth": formatDate(dateOfBirth),
+//           "date_of_issue": formatDate(issueDate),
+//           "date_of_expiry": formatDate(expiryDate)
+//       };
+      
+//       // Sending the JSON response
+//       res.send(responseObject);
+//       console.log(responseObject)
+//       console.log("image recieved")
+//       // res.json({ textResults });
+//     } catch (error) {
+//         console.error('Error during text detection:', error.message);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+
 app.post('/upload', upload.single('image'), async (req, res) => {
-    try {
+  try {
+    const fileName = 'uploads/' + req.file.filename;
+    const [result] = await client.textDetection(fileName);
+    const detections = result.textAnnotations;
+    const textResults = detections.map(text => text.description);
 
-      const fileName = 'uploads/' + req.file.filename
-      // console.log(fileName)
-     // Performs text detection on the local file
-      const [result] = await client.textDetection(fileName);
-     // console.log(result)
-      console.log("IN POST CALL")
-      const detections = result.textAnnotations;
-      const textResults = await detections.map(text => text.description);
-      // console.log(textResults)
+    const englishDateRegex = /\b\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\. \d{4}\b/g;
 
-      // Join the array elements into a single string for easier processing
-      const englishDateRegex = /\b\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\. \d{4}\b/g;
-      // Function to extract English dates from text using the regex
-      function extractEnglishDates(text) 
-      {
-        return text.match(englishDateRegex) || [];
-      }
-      // Array to store all extracted English dates
-      let allEnglishDates = [];
-      // Loop through each text result and extract English dates
-      textResults.forEach(result => {
+    function extractEnglishDates(text) {
+      return text.match(englishDateRegex) || [];
+    }
+
+    let allEnglishDates = [];
+
+    textResults.forEach(result => {
       const englishDatesInResult = extractEnglishDates(result);
       allEnglishDates = allEnglishDates.concat(englishDatesInResult);
-      });
+    });
 
+    const joinedText = textResults.join(' ');
 
-      const joinedText = textResults.join(' ');
+    const idNumberRegex = /\b\d+ \d+ \d+ \d+ \d+\b/g;
+    const firstNameRegex = /\bName\s+([\s\S]+?)\n/;
+    const lastNameRegex = /\bLast\s+name\s+(\S+)/;
 
-      // Regular expressions to extract information
-      const idNumberRegex = /\b\d+ \d+ \d+ \d+ \d+\b/g;
-      const firstNameRegex = /\bName\s+([\s\S]+?)\n/;
-      const lastNameRegex = /\bLast\s+name\s+(\S+)/;
+    const idNumberMatch = joinedText.match(idNumberRegex);
+    const firstNameMatch = joinedText.match(firstNameRegex);
+    const lastNameMatch = joinedText.match(lastNameRegex);
 
-      // Extract information using regular expressions
-      const idNumber = joinedText.match(idNumberRegex)[0];
-      const firstName = joinedText.match(firstNameRegex)[1];
-      const lastName = joinedText.match(lastNameRegex)[1];
-      const dateOfBirth = allEnglishDates[0];
-      const issueDate = allEnglishDates[1];
-      
-      const expiryDate = allEnglishDates[2];
+    const idNumber = idNumberMatch ? idNumberMatch[0] : '';
+    const firstName = firstNameMatch ? firstNameMatch[1] : '';
+    const lastName = lastNameMatch ? lastNameMatch[1] : '';
+    const dateOfBirth = allEnglishDates[0] || '';
+    const issueDate = allEnglishDates[1] || '';
+    const expiryDate = allEnglishDates[2] || '';
 
-      function formatDate(dateString) {
-          const date = new Date(dateString);
-          const day = date.getDate().toString().padStart(2, '0');
-          const month = (date.getMonth() + 1).toString().padStart(2, '0');
-          const year = date.getFullYear();
-          return `${day}/${month}/${year}`;
-      }
-
-      const responseObject = {
-          identification_number: idNumber,
-          name: firstName,
-          last_name: lastName,
-          "date_of_birth": formatDate(dateOfBirth),
-          "date_of_issue": formatDate(issueDate),
-          "date_of_expiry": formatDate(expiryDate)
-      };
-      
-      // Sending the JSON response
-      res.send(responseObject);
-      console.log(responseObject)
-      console.log("image recieved")
-      // res.json({ textResults });
-    } catch (error) {
-        console.error('Error during text detection:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
     }
+
+    const responseObject = {
+      identification_number: idNumber,
+      name: firstName,
+      last_name: lastName,
+      "date_of_birth": formatDate(dateOfBirth),
+      "date_of_issue": formatDate(issueDate),
+      "date_of_expiry": formatDate(expiryDate)
+    };
+
+    res.send(responseObject);
+  } catch (error) {
+    console.error('Error during text detection:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Use the errorHandler middleware to handle errors

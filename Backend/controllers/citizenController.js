@@ -43,30 +43,8 @@ const createCitizen = asyncHandler(async(req, res) => {
     }
 })
 
-
-const getCitizen = async (req, res) => {
-    try {
-        const id = req.params.id;
-        if (!id) {
-            res.status(404);
-            throw new Error('Citizen ID not provided');
-        }
-        const citizen = await Citizen.findOne({ identification_number: id });
-        if (citizen) {
-            res.json(citizen);
-        } else {
-            
-            res.status(404);
-            throw new Error('Citizen not found');
-        }
-    } catch (error) {
-        
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
 const editCitizen = async (req, res) => {
+
     console.log("edit citizen")
     const  updatedData  = req.body; 
     console.log(updatedData)
@@ -101,25 +79,47 @@ const editCitizen = async (req, res) => {
     }
   };
 
+const getCitizen = async (req, res) => {
+    try {
+       
+        const id = req.params.id;
+        if (!id) {
+            res.status(404);
+            throw new Error('Citizen ID not provided');
+        }
+        const citizen = await Citizen.findOne({ identification_number: id });
+        if (citizen) {
+            res.json(citizen);
+        } else {
+            res.status(404);
+            throw new Error('Citizen not found');
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
 const deleteCitizen = async (req, res) => {
     try {
-        // console.log('IN DELETE CALL');
-        // console.log(req.params);
+        console.log('IN DELETE CALL');
+        console.log(req.params);
+
         const id_number = req.params.id;
         // Use a try-catch block for MongoDB operations
-        try{
+        try {
             const citizen = await Citizen.findOne({ identification_number: id_number });
 
             if (citizen) {
+                console.log("CITIZEN", citizen);
                 await Citizen.findByIdAndDelete(citizen.id);
                 res.json({ message: 'Citizen removed' });
             } else {
                 res.status(404);
                 throw new Error('Citizen not found');
             }
-        } 
-        catch (mongoError) 
-        {
+        } catch (mongoError) {
             // Handle MongoDB errors
             console.error('MongoDB Error:', mongoError);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -131,5 +131,5 @@ const deleteCitizen = async (req, res) => {
 };
 
 
-module.exports = {createCitizen, getCitizen, deleteCitizen,editCitizen}
+module.exports = {createCitizen, getCitizen, deleteCitizen, editCitizen}
 
