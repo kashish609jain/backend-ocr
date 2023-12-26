@@ -101,18 +101,31 @@ const getCitizen = async (req, res) => {
     }
 };
 
+// const getAllCitizens = async (req, res) => {
+//     try {
+//         const allCitizens = await Citizen.find({});
+
+//         // Send the array of citizens as the response
+//         res.json(allCitizens);
+//     } catch (error) {
+//         // Handle other errors or log them if needed
+//         console.error('Error fetching all citizens:', error.message);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
 const getAllCitizens = async (req, res) => {
     try {
-        const allCitizens = await Citizen.find({});
+        const uniqueCitizens = await Citizen.distinct('identification_number');
 
-        // Send the array of citizens as the response
-        res.json(allCitizens);
+        // Send the array of unique identification numbers as the response
+        res.json(uniqueCitizens);
     } catch (error) {
         // Handle other errors or log them if needed
-        console.error('Error fetching all citizens:', error.message);
+        console.error('Error fetching unique identification numbers:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 
 const deleteCitizen = async (req, res) => {
