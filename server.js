@@ -49,7 +49,7 @@ const upload = multer({
 
 // Creates a client
 const client = new vision.ImageAnnotatorClient({
-    keyFilename:  process.env.GOOGLE_CLOUD_CREDENTIALS
+    keyFilename:'Backend/api_key.json'
 });
  
 app.use(cors());
