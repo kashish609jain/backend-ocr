@@ -2,46 +2,44 @@ const asyncHandler = require('express-async-handler')
 const Citizen = require('../models/citizenModel')
 
 
-const createCitizen = asyncHandler(async(req, res) => {
-    
-    const citizenExists = await Citizen.findOne({identification_number: req.body.idNumber})
-    const {idNumber, name, last_name, date_of_birth, date_of_issue, date_of_expiry} = req.body
-
-    if(citizenExists)
-    {
-        citizenExists.name = name || citizenExists.name
-        citizenExists.last_name = last_name || citizenExists.last_name
-        citizenExists.date_of_birth = date_of_birth || citizenExists.date_of_birth
-        citizenExists.date_of_issue = date_of_issue || citizenExists.date_of_issue
-        citizenExists.date_of_expiry = date_of_expiry || citizenExists.date_of_expiry
-        await citizenExists.save()
-    } 
-    else 
-    {
-        const citizen = await Citizen.create({
-            identification_number: idNumber, 
-            name, 
-            last_name, 
-            date_of_birth, 
-            date_of_issue,  
-            date_of_expiry
-        })
-
-        try{
-            res.status(201).json(citizen)
-        } catch (error) {
-            res.status(400)
-            throw new Error('Unable to Save') 
-        }
+const createCitizen = asyncHandler(async (req, res) => {
+    const { idNumber, name, last_name, date_of_birth, date_of_issue, date_of_expiry } = req.body;
+    const citizenExists = await Citizen.findOne({ identification_number: idNumber });
+  
+    if (citizenExists) {
+      // Update the existing citizen's information
+      citizenExists.name = name || citizenExists.name;
+      citizenExists.last_name = last_name || citizenExists.last_name;
+      citizenExists.date_of_birth = date_of_birth || citizenExists.date_of_birth;
+      citizenExists.date_of_issue = date_of_issue || citizenExists.date_of_issue;
+      citizenExists.date_of_expiry = date_of_expiry || citizenExists.date_of_expiry;
+  
+      await citizenExists.save();
+  
+      try {
+        res.status(200).json(citizenExists);
+      } catch (error) {
+        res.status(400).json({ error: 'Unable to Update' });
+      }
+    } else {
+      // Create a new citizen if one with the same identification number doesn't exist
+      const newCitizen = await Citizen.create({
+        identification_number: idNumber,
+        name,
+        last_name,
+        date_of_birth,
+        date_of_issue,
+        date_of_expiry,
+      });
+  
+      try {
+        res.status(201).json(newCitizen);
+      } catch (error) {
+        res.status(400).json({ error: 'Unable to Save' });
+      }
     }
-
-    try{
-        res.status(201).json(citizenExists)
-    } catch (error) {
-        res.status(400)
-        throw new Error('Unable to Save')
-    }
-})
+  });
+  
 
 const editCitizen = async (req, res) => {
 
